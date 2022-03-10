@@ -32,7 +32,8 @@ python pretrain_bert.py \
        --save-interval 10000 \
        --eval-interval 1000 \
        --eval-iters 10 \
-       --fp16
+       --fp16 \
+       --exp
 
 rm -rf ./checkpoints/*
 
