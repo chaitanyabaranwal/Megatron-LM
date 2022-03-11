@@ -509,6 +509,8 @@ def _add_training_args(parser):
                        'This kernel supports only a set of hidden sizes. Please '
                        'check persist_ln_hidden_sizes if your hidden '
                        'size is supported.')
+    group.add_argument('--exp', action='store_true',
+                       help='set to experiment mode to save tensorboard logs and training log to local file')
     return parser
 
 

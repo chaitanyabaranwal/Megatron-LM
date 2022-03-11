@@ -92,6 +92,11 @@ def set_global_variables(extra_args_provider=None, args_defaults={},
     args = _parse_args(extra_args_provider=extra_args_provider,
                        defaults=args_defaults,
                        ignore_unknown_args=ignore_unknown_args)
+
+    # for experiment purpose
+    if args.exp:
+        _handle_experiment_logs(args)
+
     _build_num_microbatches_calculator(args)
     if args.vocab_file:
         _ = _build_tokenizer(args)
@@ -102,6 +107,27 @@ def set_global_variables(extra_args_provider=None, args_defaults={},
     if args.exit_signal_handler:
         _set_signal_handler()
 
+def _handle_experiment_logs(args):
+    exp_name = 'ws{}_tensor{}_pipe{}_seq{}_micbs{}_glbbs{}_layers{}_heads{}_hidden{}'.format(
+        args.world_size,
+        args.tensor_model_parallel_size,
+        args.pipeline_model_parallel_size,
+        args.seq_length,
+        args.micro_batch_size,
+        args.global_batch_size,
+        args.num_layers,
+        args.num_attention_heads,
+        args.hidden_size
+    )
+
+    # create workspace
+    exp_path = f'./experiment/{exp_name}'
+    os.makedirs(exp_path, exist_ok=True)
+
+    # direct standard output to log file
+    log_file_path = os.path.join(exp_path, 'train.log')
+    f = open(log_file_path, 'a')
+    sys.stdout = f
 
 def _parse_args(extra_args_provider=None, defaults={},
                 ignore_unknown_args=False):
